@@ -262,12 +262,12 @@ const CONFIG = {
   // Paste the Google Apps Script web app URL here. Leave blank for preview mode.
   ENDPOINT: "https://script.google.com/macros/s/AKfycbxwxNpocouLvpBg2NXlclvnpBghLkC_3hU_X9RqlhtqlOvBy3QBrMISgVjLmleU4O_ILg/exec",
 
-  date: "Thursday 19 November 2026",
+  date: "Thursday 19th November 2026",
   time: "6.00 PM till late",
   venue: "MLP Light Lab",
   address: "Nedlands",
   mapUrl: "",                      // optional Google Maps link
-  rsvpBy: "Thursday 5 November 2026",
+  rsvpBy: "Thursday 5th November 2026",
 
   // Calendar invite file, uploaded alongside this page
   icsFile: "dark.ics"
@@ -344,7 +344,7 @@ form.addEventListener("submit", async (ev) => {
 function showDone(d) {
   const first = d.name.split(" ")[0];
   const yes = d.attending === "Yes";
-  $("doneTitle").textContent = yes ? "See you in the dark." : "We'll miss you.";
+  $("doneTitle").textContent = yes ? "DARK19112026 [CONFIRMED]" : "We'll miss you.";
   $("doneText").textContent = yes
     ? "Thank you, " + first + ". Your place is confirmed for " + CONFIG.date + "."
     : "Thank you for letting us know, " + first + ".";
