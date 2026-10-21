@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+</head>
+<body>
+<title>DARK RSVP</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: the invite itself as the opening frame, then a single narrow column of details and a two-button RSVP. One look, dark only. */
+:root {
+  --ink: #000000;
+  --paper: #EFEBE3;
+  --dim: #8A877F;
+  --line: #262523;
+  --field: #0D0D0C;
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { background: var(--ink); color: var(--paper); }
+body {
+  font-family: var(--display);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 440px; margin: 0 auto; }
+
+/* Hero, mirroring the printed invite */
+.hero {
+  min-height: 78svh;
+  display: grid;
+  place-items: center;
+  padding-block: 64px 40px;
+  text-align: center;
+}
+.mark {
+  font-weight: 800;
+  font-stretch: 88%;
+  font-size: clamp(72px, 22vw, 132px);
+  line-height: .9;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.mark span { font-size: .42em; letter-spacing: 0; }
+.datecode {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .32em;
+  margin-top: 22px;
+  padding-left: .32em;
+}
+.hero-inner { animation: rise 1.4s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes rise { from { opacity: .0; filter: blur(6px); } to { opacity: 1; filter: blur(0); } }
+@media (prefers-reduced-motion: reduce) { .hero-inner { animation: none; } }
+
+/* Details */
+.details { padding-block: 8px 56px; }
+.lede { font-size: 17px; line-height: 1.5; margin: 0 0 36px; text-wrap: pretty; }
+dl { margin: 0; display: grid; gap: 0; border-top: 1px solid var(--line); }
+.row {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 16px;
+  padding-block: 14px;
+  border-bottom: 1px solid var(--line);
+}
+dt {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--dim);
+  padding-top: 3px;
+}
+dd { margin: 0; min-width: 0; }
+dd a { color: var(--paper); text-underline-offset: 3px; text-decoration-color: var(--dim); }
+
+/* RSVP */
+.rsvp { padding-block: 16px 72px; }
+.label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--dim);
+  display: block;
+  margin-bottom: 8px;
+}
+h2 {
+  font-weight: 800;
+  font-stretch: 88%;
+  font-size: 34px;
+  line-height: 1;
+  margin: 0 0 8px;
+  letter-spacing: -0.005em;
+}
+.by { color: var(--dim); margin: 0 0 28px; font-size: 14px; }
+form { display: grid; gap: 18px; }
+.choice { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.choice input { position: absolute; opacity: 0; pointer-events: none; }
+.choice label {
+  display: grid;
+  place-items: center;
+  height: 64px;
+  border: 1px solid var(--line);
+  font-weight: 800;
+  font-stretch: 88%;
+  font-size: 22px;
+  letter-spacing: .02em;
+  cursor: pointer;
+  transition: background .25s, color .25s, border-color .25s;
+}
+.choice label:hover { border-color: var(--dim); }
+.choice input:checked + label { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+.choice input:focus-visible + label { outline: 2px solid var(--paper); outline-offset: 3px; }
+.field { display: grid; gap: 0; }
+.field input, .field textarea {
+  font: inherit;
+  color: var(--paper);
+  background: var(--field);
+  border: 1px solid var(--line);
+  border-radius: 0;
+  padding: 14px 14px;
+  width: 100%;
+  min-width: 0;
+}
+.field textarea { resize: vertical; min-height: 72px; }
+.field input:focus, .field textarea:focus { outline: none; border-color: var(--paper); }
+.field input::placeholder, .field textarea::placeholder { color: #55534E; }
+.submit {
+  font: inherit;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  height: 56px;
+  background: transparent;
+  color: var(--paper);
+  border: 1px solid var(--paper);
+  cursor: pointer;
+  margin-top: 6px;
+  transition: background .25s, color .25s;
+}
+.submit:hover:not(:disabled) { background: var(--paper); color: var(--ink); }
+.submit:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
+.submit:disabled { opacity: .45; cursor: default; }
+.error { color: #E0A39A; font-size: 14px; margin: 0; }
+
+.done { text-align: left; }
+.done h2 { font-size: 44px; margin-bottom: 14px; }
+.done p { margin: 0 0 22px; }
+.cal {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--paper);
+  text-decoration: none;
+  border-bottom: 1px solid var(--dim);
+  padding-bottom: 4px;
+}
+.change { background: none; border: 0; color: var(--dim); font: inherit; font-size: 13px; padding: 0; margin-top: 28px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; display: block; }
+
+footer {
+  display: grid;
+  place-items: center;
+  padding-block: 24px 48px;
+}
+.mlp {
+  font-weight: 800;
+  font-stretch: 88%;
+  font-size: 15px;
+  line-height: .9;
+  color: #4A4844;
+  letter-spacing: .02em;
+}
+.demo {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #4A4844;
+  text-align: center;
+  margin: 0 0 16px;
+}
+</style>
+
+<header class="hero">
+  <div class="hero-inner">
+    <h1 class="mark">DARK<span>.</span></h1>
+    <div class="datecode" id="datecode">19112026</div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="details" aria-label="Event details">
+    <dl id="facts"></dl>
+  </section>
+
+  <section class="rsvp" id="rsvp" aria-labelledby="rsvp-h">
+    <div id="formView">
+      <span class="label">RSVP</span>
+      <h2 id="rsvp-h">Will you join us?</h2>
+      <p class="by" id="by"></p>
+      <form id="form" novalidate>
+        <div class="choice" role="radiogroup" aria-label="Attending">
+          <input type="radio" name="attending" id="yes" value="Yes">
+          <label for="yes">YES</label>
+          <input type="radio" name="attending" id="no" value="No">
+          <label for="no">NO</label>
+        </div>
+        <div class="field">
+          <label class="label" for="name">Full name</label>
+          <input id="name" name="name" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label class="label" for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field" id="dietWrap" hidden>
+          <label class="label" for="dietary">Dietary requirements</label>
+          <textarea id="dietary" name="dietary" placeholder="Leave blank if none"></textarea>
+        </div>
+        <p class="error" id="error" role="alert" hidden></p>
+        <button class="submit" id="submit" type="submit">Send RSVP</button>
+      </form>
+    </div>
+
+    <div class="done" id="doneView" hidden aria-live="polite">
+      <span class="label">RSVP received</span>
+      <h2 id="doneTitle"></h2>
+      <p id="doneText"></p>
+      <a class="cal" id="calLink" hidden>Add to calendar</a>
+      <button class="change" id="change" type="button">Change my response</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div>
+    <p class="demo" id="demoNote" hidden>Preview mode. Responses are not saved.</p>
+    <div class="mlp" aria-label="MLP">ML<br>P.</div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   EDIT THIS BLOCK
+   ============================================================ */
+const CONFIG = {
+  // Paste the Google Apps Script web app URL here. Leave blank for preview mode.
+  ENDPOINT: "https://script.google.com/macros/s/AKfycbxwxNpocouLvpBg2NXlclvnpBghLkC_3hU_X9RqlhtqlOvBy3QBrMISgVjLmleU4O_ILg/exec",
+
+  date: "Thursday 19 November 2026",
+  time: "6.00 PM till late",
+  venue: "MLP Light Lab",
+  address: "Nedlands",
+  mapUrl: "",                      // optional Google Maps link
+  rsvpBy: "Thursday 5 November 2026",
+
+  // Calendar invite file, uploaded alongside this page
+  icsFile: "dark.ics"
+};
+/* ============================================================ */
+
+const $ = (id) => document.getElementById(id);
+
+// Render details
+$("by").textContent = "Kindly respond by " + CONFIG.rsvpBy + ".";
+const facts = [
+  ["Date", CONFIG.date],
+  ["Time", CONFIG.time],
+  ["Venue", CONFIG.venue + (CONFIG.address ? "\n" + CONFIG.address : ""), CONFIG.mapUrl]
+];
+for (const [k, v, href] of facts) {
+  if (!v) continue;
+  const row = document.createElement("div"); row.className = "row";
+  const dt = document.createElement("dt"); dt.textContent = k;
+  const dd = document.createElement("dd"); dd.style.whiteSpace = "pre-line";
+  if (href) { const a = document.createElement("a"); a.href = href; a.target = "_blank"; a.rel = "noopener"; a.textContent = v; dd.appendChild(a); }
+  else dd.textContent = v;
+  row.append(dt, dd); $("facts").appendChild(row);
+}
+if (!CONFIG.ENDPOINT) $("demoNote").hidden = false;
+
+// Prefill from link, e.g. ?name=Jane%20Smith&email=jane@x.com
+try {
+  const q = new URLSearchParams(location.search);
+  if (q.get("name")) $("name").value = q.get("name");
+  if (q.get("email")) $("email").value = q.get("email");
+} catch (e) {}
+
+const form = $("form");
+form.addEventListener("change", () => {
+  $("dietWrap").hidden = !$("yes").checked;
+});
+
+function showError(msg) { const e = $("error"); e.textContent = msg; e.hidden = false; }
+
+form.addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  $("error").hidden = true;
+  const attending = form.attending.value;
+  const name = $("name").value.trim();
+  const email = $("email").value.trim();
+  if (!attending) return showError("Choose YES or NO.");
+  if (!name) return showError("Enter your full name.");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError("Enter a valid email address.");
+
+  const data = {
+    name, email, attending,
+    dietary: attending === "Yes" ? $("dietary").value.trim() : ""
+  };
+
+  const btn = $("submit");
+  btn.disabled = true; btn.textContent = "Sending";
+  try {
+    if (CONFIG.ENDPOINT) {
+      const res = await fetch(CONFIG.ENDPOINT, { method: "POST", body: JSON.stringify(data) });
+      const out = await res.json().catch(() => ({}));
+      if (!res.ok || out.ok === false) throw new Error();
+    } else {
+      await new Promise(r => setTimeout(r, 600));
+    }
+    showDone(data);
+  } catch (e) {
+    showError("Your RSVP didn't go through. Check your connection and try again.");
+  } finally {
+    btn.disabled = false; btn.textContent = "Send RSVP";
+  }
+});
+
+function showDone(d) {
+  const first = d.name.split(" ")[0];
+  const yes = d.attending === "Yes";
+  $("doneTitle").textContent = yes ? "See you in the dark." : "We'll miss you.";
+  $("doneText").textContent = yes
+    ? "Thank you, " + first + ". Your place is confirmed for " + CONFIG.date + "."
+    : "Thank you for letting us know, " + first + ".";
+  $("calLink").hidden = !yes;
+  if (yes) $("calLink").href = CONFIG.icsFile;
+  $("formView").hidden = true;
+  $("doneView").hidden = false;
+}
+
+$("change").addEventListener("click", () => {
+  $("doneView").hidden = true;
+  $("formView").hidden = false;
+});
+</script>
+
+</body>
+</html>
